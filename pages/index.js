@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import fetch from 'isomorphic-fetch'
-import { flatten, uniq, set } from 'lodash'
+import { flatten, uniq, set, get } from 'lodash'
 import Meta from './../components/meta'
 import PageTitle from './../components/page-title'
 import List from './../components/list'
@@ -14,10 +14,15 @@ const { arrayOf, object, shape, number } = React.PropTypes
 export default class OpenSource extends Component {
   static async getInitialProps() {
     const getIssuesRes = await fetch(
-      `https://api.github.com/search/issues?q=state:open+label:first-timers-only&sort=created&order=desc&per_page=100&access_token=${
-        process.env.GITHUB_TOKEN
-      }`,
-      { cache: 'default' }
+      `https://api.github.com/search/issues?q=state:open+label:first-timers-only&sort=created&order=desc&per_page=100`,{
+        method:"GET",
+        headers:{
+          "Authentication": `Bearer ${process.env.GITHUB_TOKEN}`,
+          "Accept": "application/vnd.github.v3+json"
+
+        },
+      },
+       
     )
     const issuesResJson = await getIssuesRes.json()
     const issues = issuesResJson.items
